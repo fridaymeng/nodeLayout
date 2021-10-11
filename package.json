@@ -1,0 +1,19 @@
+{
+  "name": "nodelayout",
+  "version": "1.0.0",
+  "description": "For node Layout.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fridaymeng/nodeLayout.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fridaymeng/nodeLayout/issues"
+  },
+  "homepage": "https://github.com/fridaymeng/nodeLayout#readme"
+}
