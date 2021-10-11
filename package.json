@@ -1,6 +1,6 @@
 {
   "name": "nodelayout",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "For node Layout.",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/fridaymeng/nodeLayout/issues"
   },
-  "homepage": "https://github.com/fridaymeng/nodeLayout#readme"
+  "homepage": "https://github.com/fridaymeng/nodeLayout#readme",
+  "devDependencies": {
+    "webpack-cli": "^4.9.0"
+  }
 }
