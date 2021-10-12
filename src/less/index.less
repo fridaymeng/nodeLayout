@@ -5,10 +5,29 @@
   height: 400px;
   width: 100%;
   svg {
+    .small-circle {
+      opacity: 0;
+    }
     g.unit-dis {
-      cursor: move;
+      stroke-width: 1px;
       &.selected {
-        stroke-width: 3px;
+        stroke-width: 2px;
+        .small-circle {
+          opacity: 1;
+          fill: #fff;
+          stroke: #08c;
+        }
+      }
+      .main-circle {
+        cursor: move;
+      }
+    }
+    .connect-line {
+      opacity: 0;
+      stroke: #111;
+      stroke-width: 2px;
+      &.show {
+        opacity: 1;
       }
     }
   }
