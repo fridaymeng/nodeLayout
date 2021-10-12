@@ -9,4 +9,22 @@ module.exports = {
     filename: 'index.js',
     library: "nodeLayout",
   },
+  module: {
+    rules: [
+      {
+        test: /\.less$/,
+        use: [
+          {
+            loader: "style-loader"
+          },
+          {
+            loader: "css-loader"
+          },
+          {
+            loader: "less-loader"
+          }
+        ]
+      },
+    ],
+  }
 };
