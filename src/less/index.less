@@ -7,15 +7,15 @@
   svg {
     .small-circle {
       opacity: 0;
+      fill: #fff;
+      stroke: #08c;
     }
     g.unit-dis {
       stroke-width: 1px;
-      &.selected {
+      &.selected, &:hover {
         stroke-width: 2px;
         .small-circle {
           opacity: 1;
-          fill: #fff;
-          stroke: #08c;
         }
       }
       .main-circle {
@@ -29,6 +29,10 @@
       &.show {
         opacity: 1;
       }
+    }
+    .connect-fixed-line {
+      stroke: #111;
+      stroke-width: 2px;
     }
   }
 }
