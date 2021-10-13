@@ -26,5 +26,12 @@ module.exports = {
         ]
       },
     ],
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'lib'),
+    },
+    compress: true,
+    port: 9000,
   }
 };
