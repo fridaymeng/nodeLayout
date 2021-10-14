@@ -1,3 +1,3 @@
 # nodeLayout
-![help](assets/img/index.pnt)
+![help](assets/img/index.png)
 For node Layout.
