@@ -1,15 +1,21 @@
-function deepProxy (obj, callback) {
-  return new Proxy(obj, {
-    get: function(target, property) {
-      return target[property];
+function Archiver(callback) {
+  var arr = [];
+  Object.defineProperty(this, 'data', {
+    get: function() {
+      return arr;
     },
-    set: function(target, property, value, receiver) {
-      target[property] = value
-      if (value.source) {
-        callback(target);
-      };
-      return true;
+    set: function(value) {
+      arr = value;
+      callback && callback(arr);
     }
   });
+  this.__proto__ = arr;
+  this.push = function(params) {
+    arr.push(params);
+    callback && callback(arr);
+  };
+}
+function deepProxy (callback) {
+  return new Archiver(callback);
 }
 export default deepProxy;

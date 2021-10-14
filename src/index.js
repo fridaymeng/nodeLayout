@@ -5,12 +5,14 @@ import icon from "./utils/icon";
 import "./less/index.less";
 
 let objectWrap, gWrap, pathWrap;
-let nodeData = [];
+let nodeData = deepProxy((data) => {
+  renderNodes(data);
+});;
 // circle radius
 const mainCirceRadius = 25;
 const smallCirceRadius = 5;
 
-const connectData = deepProxy([], (data) => {
+const connectData = deepProxy((data) => {
   renderLines(data);
 });
 
@@ -21,10 +23,10 @@ const drag = d3
   .on("drag", draging)
   .on("end", dragend);
 
-function renderNodes () {
+function renderNodes (data) {
   d3.selectAll(".unit-dis").remove();
   objectWrap = gWrap.selectAll("g")
-    .data(nodeData)
+    .data(data)
     .enter()
     .append("g")
     .attr("id", d => d.id)
@@ -175,25 +177,38 @@ function renderMain () {
 
 function init(params = {}) {
   const wrap = d3.select(`#${params.id}`);
-  const svgWrap = wrap.append("svg");
+  const svg = wrap.append("svg");
+  // fill pattern
+  svg.append("rect")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("fill", "url(#diagramPattern)")
+    .call(
+      d3.zoom()
+      .scaleExtent([.1, 100])
+      .on("zoom", svgZoomed)
+    );
+  const svgWrap = svg.append("g");
   pathWrap = svgWrap.append("g");
   gWrap = svgWrap.append("g");
   wrap.attr("class", "nodelayout-wrap");
-  svgWrap
+  svg
     .attr("width", "100%")
     .attr("height", "100%");
+  function svgZoomed(d) {
+    svgWrap.attr("transform", d.transform);
+  }
   if (!params.data) params.data = []
-  nodeData = params.data.map(item => {
+  nodeData.data = params.data.map(item => {
     return {
       id: uuid(16, 62),
       text: item,
       x: Math.random() * 1000,
       y: Math.random() * 300
-    }
+    };
   });
-  renderNodes();
   // arrow  
-  let markerWrap = svgWrap.append("defs");  
+  let markerWrap = svg.append("defs");  
   markerWrap.append("marker")  
     .attr("id","arrowEnd")  
     .attr("markerUnits","strokeWidth")  
@@ -218,7 +233,35 @@ function init(params = {}) {
     .append("path")
     .attr("d","M10,2 L2,6 L10,10 L6,6 L10,2")
     .attr("class","pathArrow");
-  
+  /* 网格 */
+  const gridArr = new Array(20);
+  const patternWrap = markerWrap
+    .append("pattern")
+    .attr("id", "diagramPattern")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 100)
+    .attr("height", 100)
+    .attr("patternUnits", "userSpaceOnUse");
+  patternWrap
+    .selectAll("path")
+    .data(gridArr)
+    .enter()
+    .append("path")
+    .attr("stroke", "#e0e0e0")
+    .attr("stroke-width", "0.25")
+    .attr("dashArray", "")
+    .attr("d", (d, index) => {
+      if (index === 0) {
+      return `M0,0.5 L100,0.5 Z`;
+      } else if (index < 10 && index > 0) {
+      return `M0,${index * 10}.125 L100,${index * 10}.125 Z`;
+      } else if (index === 10) {
+      return `M0.5,0 L0.5,100 Z`;
+      } else if (index > 10) {
+      return `M${(index - 10) * 10}.125,0 L${(index - 10) * 10}.125,100 Z`;
+        }
+    });
   // connect line
   pathWrap.append("path")
     .attr("class", "connect-line")
@@ -232,6 +275,5 @@ function add (params = {}) {
     x: Math.random() * 1000,
     y: Math.random() * 300
   });
-  renderNodes();
 }
 export { init, add };
