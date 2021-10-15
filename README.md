@@ -14,6 +14,11 @@ OR
 npm install nodeLayout
 ```
 
+## Demo
+```bash
+yarn start
+```
+
 ### Init
 ```js
 nodeLayout.init({

@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import uuid from "./utils/uuid";
 import deepProxy from "./utils/deepProxy";
+import renderOptionList from "./optionList";
 import { defaultIcon, deletIcon } from "./utils/icon";
 import "./less/index.less";
 
@@ -132,14 +133,14 @@ function renderMain () {
     .on("end", smallCircleDragend);
   // handle small circle
   function smallCircleDragstart (event, d) {
-    d.dx = event.sourceEvent.x;
-    d.dy = event.sourceEvent.y;
+    d.dx = event.sourceEvent.layerX;
+    d.dy = event.sourceEvent.layerY;
   }
   function smallCircleDraging (event, d) {
-    d.x1 = d.dx - smallCirceRadius * 2 - zoomX;
-    d.y1 = d.dy - smallCirceRadius * 2 - zoomY;
-    d.x2 = event.sourceEvent.x - smallCirceRadius * 2 - zoomX;
-    d.y2 = event.sourceEvent.y - smallCirceRadius * 2 - zoomY;
+    d.x1 = d.dx - zoomX;
+    d.y1 = d.dy - zoomY;
+    d.x2 = event.sourceEvent.layerX - zoomX;
+    d.y2 = event.sourceEvent.layerY - zoomY;
     d3.select(".connect-line")
       .attr("class", "connect-line show")
       .attr("d", `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
@@ -213,6 +214,11 @@ function renderMain () {
 
 function init(params = {}) {
   const wrap = d3.select(`#${params.id}`).attr("height", svgHeight);
+  renderOptionList({
+    wrap,
+    add,
+    option: params.option
+  });
   const svg = wrap.append("svg");
   // fill pattern
   svg.append("rect")
@@ -319,9 +325,9 @@ function init(params = {}) {
 function add (params = {}) {
   nodeData.push({
     id: uuid(16, 62),
-    text: params + (nodeData.data.length + 1),
-    x: svgWidth/10 + nodeData.data.length * 200,
-    y: svgHeight/2
+    text: params.text || params + (nodeData.data.length + 1),
+    x: params.x || svgWidth/10 + nodeData.data.length * 200,
+    y: params.y || svgHeight/2
   });
 }
 export { init, add };
