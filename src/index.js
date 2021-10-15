@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import uuid from "./utils/uuid";
 import deepProxy from "./utils/deepProxy";
-import icon from "./utils/icon";
+import { defaultIcon, deletIcon } from "./utils/icon";
 import "./less/index.less";
 
 var handler = function() {
@@ -88,7 +88,7 @@ function draging (event, d) {
   const $this = this;
   d.xp = d.x - (d.dx - event.sourceEvent.x);
   d.yp = d.y - (d.dy - event.sourceEvent.y);
-  connectData.forEach(item => {
+  connectData.data.forEach(item => {
     const index = item.source === d.id ? item.startIndex : item.endIndex;
     const xValue = Math.cos(Math.PI / 180 * index * 90) * mainCirceRadius;
     const yValue = Math.sin(Math.PI / 180 * index * 90) * mainCirceRadius;
@@ -100,7 +100,7 @@ function draging (event, d) {
       item.y2 = d.yp + yValue;
     }
   });
-  renderLines(connectData);
+  renderLines(connectData.data);
   d3.select($this).attr("transform", () => `translate(${d.xp}, ${d.yp})`);
 }
 // drag end
@@ -128,7 +128,21 @@ function renderLines (data) {
   isInit = false;
 }
 
+function handleDeleteNode(event, d) {
+  nodeData.data = nodeData.data.filter (item => d.id !== item.id);
+  connectData.data = connectData.data.filter (item => {
+    return item.source !== d.id && item.target !== d.id;
+  })
+}
+
 function renderMain () {
+  // delete button
+  objectWrap.append("g")
+    .attr("class", "delete-circle")
+    .attr("title", "delete")
+    .attr("transform", `translate(${mainCirceRadius}, ${-mainCirceRadius - 5})`)
+    .on("click", handleDeleteNode)
+    .html(deletIcon);
   // small circle drag
   const smallCircleDrag = d3
     .drag()
@@ -208,7 +222,7 @@ function renderMain () {
   // icon
   objectWrap.append("g")
     .attr("transform", "translate(-15, -15)")
-    .html(icon);
+    .html(defaultIcon);
   objectWrap.append("text")
     .attr("y", 45)
     .attr("fill", "#111")
