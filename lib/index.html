@@ -13,7 +13,10 @@
 </head>
 <body>
   <div id="node-wrap"></div>
-  <button onmousedown="add()">add</button>
+  <button
+    onmousedown="add()"
+    style="padding: 10px 30px; margin: 5px 0 0 0; background: #fff; border: 1px solid #aaa; border-radius: 5px; cursor: pointer;"
+  >Add</button>
   <script src="index.js"></script>
   <script>
     nodeLayout.init({
@@ -21,7 +24,7 @@
       data: ["step1", "step2"] 
     })
     function add () {
-      nodeLayout.add('step4');
+      nodeLayout.add('step');
     }
   </script>
 </body>

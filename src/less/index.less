@@ -11,12 +11,17 @@
     }
     g.unit-dis {
       stroke-width: 1px;
-      &.selected, &:hover {
+      &.selected {
         stroke-width: 2px;
         .small-circle {
           opacity: 1;
         }
         .delete-circle {
+          opacity: 1;
+        }
+      }
+      &:hover {
+        .small-circle {
           opacity: 1;
         }
       }

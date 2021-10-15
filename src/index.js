@@ -39,6 +39,8 @@ const mainCirceRadius = 25;
 const smallCirceRadius = 5;
 const svgWidth = 1000;
 const svgHeight = 400;
+let zoomX = 0;
+let zoomY = 0;
 
 const connectData = deepProxy((data) => {
   renderLines(data);
@@ -155,10 +157,10 @@ function renderMain () {
     d.dy = event.sourceEvent.y;
   }
   function smallCircleDraging (event, d) {
-    d.x1 = d.dx - smallCirceRadius * 2;
-    d.y1 = d.dy - smallCirceRadius * 2;
-    d.x2 = event.sourceEvent.x - smallCirceRadius * 2;
-    d.y2 = event.sourceEvent.y - smallCirceRadius * 2;
+    d.x1 = d.dx - smallCirceRadius * 2 - zoomX;
+    d.y1 = d.dy - smallCirceRadius * 2 - zoomY;
+    d.x2 = event.sourceEvent.x - smallCirceRadius * 2 - zoomX;
+    d.y2 = event.sourceEvent.y - smallCirceRadius * 2 - zoomY;
     d3.select(".connect-line")
       .attr("class", "connect-line show")
       .attr("d", `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
@@ -250,7 +252,13 @@ function init(params = {}) {
   svg
     .attr("width", "100%")
     .attr("height", svgHeight);
+  // connect line
+  gWrap.append("path")
+    .attr("class", "connect-line")
+    .attr("marker-end","url(#arrowEnd)");
   function svgZoomed(d) {
+    zoomX = d.transform.x;
+    zoomY = d.transform.y;
     svgWrap.attr("transform", d.transform);
   }
   if (!params.data) params.data = []
@@ -327,16 +335,12 @@ function init(params = {}) {
       return `M${(index - 10) * 10}.125,0 L${(index - 10) * 10}.125,100 Z`;
         }
     });
-  // connect line
-  pathWrap.append("path")
-    .attr("class", "connect-line")
-    .attr("marker-end","url(#arrowEnd)");
 }
 
 function add (params = {}) {
   nodeData.push({
     id: uuid(16, 62),
-    text: params,
+    text: params + (nodeData.data.length + 1),
     x: svgWidth/10 + nodeData.data.length * 200,
     y: svgHeight/2
   });
