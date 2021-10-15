@@ -4,13 +4,41 @@ import deepProxy from "./utils/deepProxy";
 import icon from "./utils/icon";
 import "./less/index.less";
 
+var handler = function() {
+  return {
+     get: function(obj, prop) {
+        return obj[prop];
+     },
+     set: function(obj, prop, value) {
+        console.log(345);
+        obj[prop] = value;
+        return true;
+     }
+  };
+};
+
+var datas = new Proxy({
+  todos: ['Eat', 'drink', 'be merry']
+}, handler());
+
+datas.todos.push(43);
+console.log(datas.todos);
+datas.todos = [90];
+console.log(datas.todos);
+
 let objectWrap, gWrap, pathWrap;
+// control the animation
+let isInit = true;
 let nodeData = deepProxy((data) => {
-  renderNodes(data);
+  renderNodes({
+    data
+  });
 });;
 // circle radius
 const mainCirceRadius = 25;
 const smallCirceRadius = 5;
+const svgWidth = 1000;
+const svgHeight = 400;
 
 const connectData = deepProxy((data) => {
   renderLines(data);
@@ -23,17 +51,23 @@ const drag = d3
   .on("drag", draging)
   .on("end", dragend);
 
-function renderNodes (data) {
+function renderNodes (params = {}) {
   d3.selectAll(".unit-dis").remove();
   objectWrap = gWrap.selectAll("g")
-    .data(data)
+    .data(params.data)
     .enter()
     .append("g")
     .attr("id", d => d.id)
     .attr("class", "unit-dis")
-    .attr('transform', (d) => `translate(${d.x}, ${d.y})`)
     .call(drag)
-    .on("click", handleClick);
+    .on("click", handleClick)
+    .attr('transform', (d) => isInit ? `translate(0, 0)` : `translate(${d.x}, ${d.y})` );
+  if (isInit) {
+    objectWrap.transition()
+      .duration(750)
+      .delay(function(d, i) { return i * 10; })
+      .attr('transform', (d) => `translate(${d.x}, ${d.y})`);
+  }
   renderMain();
 }
 
@@ -56,8 +90,8 @@ function draging (event, d) {
   d.yp = d.y - (d.dy - event.sourceEvent.y);
   connectData.forEach(item => {
     const index = item.source === d.id ? item.startIndex : item.endIndex;
-    let xValue = Math.cos(Math.PI / 180 * index * 90) * mainCirceRadius;
-    let yValue = Math.sin(Math.PI / 180 * index * 90) * mainCirceRadius;
+    const xValue = Math.cos(Math.PI / 180 * index * 90) * mainCirceRadius;
+    const yValue = Math.sin(Math.PI / 180 * index * 90) * mainCirceRadius;
     if (item.source === d.id) {
       item.x1 = d.xp + xValue;
       item.y1 = d.yp + yValue;
@@ -78,13 +112,20 @@ function dragend (event, d) {
 // draw connect lines
 function renderLines (data) {
   pathWrap.selectAll(".connect-fixed-line").remove();
-  pathWrap.selectAll(".connect-fixed-line")
+  const allPath = pathWrap.selectAll(".connect-fixed-line")
     .data(data)
     .enter()
     .append("path")
     .attr("class", (d) => `start-${d.source} end-${d.target} connect-fixed-line`)
     .attr("marker-end","url(#arrowEnd)")
-    .attr("d", (d) => `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
+    .attr("d", (d) => isInit ? `M0,0 0,0` : `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
+  if (isInit) {
+    allPath.transition()
+      .duration(750)
+      .delay(function(d, i) { return i * 10; })
+      .attr("d", (d) => `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
+  }
+  isInit = false;
 }
 
 function renderMain () {
@@ -176,12 +217,12 @@ function renderMain () {
 }
 
 function init(params = {}) {
-  const wrap = d3.select(`#${params.id}`);
+  const wrap = d3.select(`#${params.id}`).attr("height", svgHeight);
   const svg = wrap.append("svg");
   // fill pattern
   svg.append("rect")
     .attr("width", "100%")
-    .attr("height", "100%")
+    .attr("height", svgHeight)
     .attr("fill", "url(#diagramPattern)")
     .call(
       d3.zoom()
@@ -194,18 +235,28 @@ function init(params = {}) {
   wrap.attr("class", "nodelayout-wrap");
   svg
     .attr("width", "100%")
-    .attr("height", "100%");
+    .attr("height", svgHeight);
   function svgZoomed(d) {
     svgWrap.attr("transform", d.transform);
   }
   if (!params.data) params.data = []
-  nodeData.data = params.data.map(item => {
+  nodeData.data = params.data.map((item, index) => {
     return {
       id: uuid(16, 62),
       text: item,
-      x: Math.random() * 1000,
-      y: Math.random() * 300
+      x: svgWidth/10 + index * 200,
+      y: svgHeight / 2
     };
+  });
+  connectData.push({
+    source: nodeData.data[0].id,
+    target: nodeData.data[1].id,
+    startIndex: 0,
+    endIndex: 2,
+    x1: nodeData.data[0].x + Math.cos(Math.PI / 180 * 2 * 90) * mainCirceRadius,
+    y1: nodeData.data[0].y + Math.sin(Math.PI / 180 * 0 * 90) * mainCirceRadius,
+    x2: nodeData.data[1].x + Math.cos(Math.PI / 180 * 2 * 90) * mainCirceRadius,
+    y2: nodeData.data[1].y + Math.sin(Math.PI / 180 * 0 * 90) * mainCirceRadius
   });
   // arrow  
   let markerWrap = svg.append("defs");  
@@ -272,8 +323,8 @@ function add (params = {}) {
   nodeData.push({
     id: uuid(16, 62),
     text: params,
-    x: Math.random() * 1000,
-    y: Math.random() * 300
+    x: svgWidth/10 + nodeData.data.length * 200,
+    y: svgHeight/2
   });
 }
 export { init, add };
