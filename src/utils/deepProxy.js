@@ -9,7 +9,8 @@ function Archiver(callback) {
       callback && callback(arr);
     }
   });
-  this.__proto__ = arr;
+  // this.__proto__ = arr;
+  this.forEach = Array.prototype.forEach
   this.push = function(params) {
     arr.push(params);
     callback && callback(arr);

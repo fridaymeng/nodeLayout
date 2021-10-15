@@ -4,28 +4,6 @@ import deepProxy from "./utils/deepProxy";
 import { defaultIcon, deletIcon } from "./utils/icon";
 import "./less/index.less";
 
-var handler = function() {
-  return {
-     get: function(obj, prop) {
-        return obj[prop];
-     },
-     set: function(obj, prop, value) {
-        console.log(345);
-        obj[prop] = value;
-        return true;
-     }
-  };
-};
-
-var datas = new Proxy({
-  todos: ['Eat', 'drink', 'be merry']
-}, handler());
-
-datas.todos.push(43);
-console.log(datas.todos);
-datas.todos = [90];
-console.log(datas.todos);
-
 let objectWrap, gWrap, pathWrap;
 // control the animation
 let isInit = true;
@@ -39,6 +17,7 @@ const mainCirceRadius = 25;
 const smallCirceRadius = 5;
 const svgWidth = 1000;
 const svgHeight = 400;
+// the x,y change when zoom
 let zoomX = 0;
 let zoomY = 0;
 
