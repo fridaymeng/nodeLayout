@@ -1,7 +1,9 @@
 # nodeLayout
-<img src="assets/img/index.png" alt="" />
-For node Layout.
-### How to use。
+<img src="https://zkboxing.com/friday/static/media/connection.2be91f9c.png" alt="" />
+
+## For Graph Layout or Edit.
+
+### How to use
 
 ```bash
 yarn add nodeLayout
