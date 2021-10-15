@@ -1,5 +1,6 @@
 # nodeLayout
-<img src="https://zkboxing.com/friday/static/media/connection.2be91f9c.png" alt="" />
+
+![nodeLayout](https://zkboxing.com/friday/static/media/connection.2be91f9c.png)
 
 ## For Graph Layout or Edit.
 
