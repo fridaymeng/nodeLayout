@@ -4,7 +4,7 @@
  * @param {radix} 基数
  */
 
- const uuid = (len, radix) => {
+/*  const uuid = (len, radix) => {
   let chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split(
     ""
   );
@@ -25,5 +25,11 @@
     }
   }
   return uuid.join("");
-};
+}; */
+function uuid () {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8)
+    return v.toString(16)
+  })
+}
 export default uuid;
