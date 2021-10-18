@@ -5,31 +5,6 @@ import renderOptionList from "./optionList";
 import { defaultIcon, deletIcon } from "./utils/icon";
 import "./less/index.less";
 
-let datas = {
-  arr: [1,34,4,5676]
-}
-
-function defineReactive(obj){
-  Object.keys(obj).forEach((key) => {
-    if(typeof obj[key] === 'object'){
-      obj[key] = defineReactive(obj[key])
-    }
-  })
-  return new Proxy(obj,{
-    get(target,key){
-      console.log('get')
-      return target[key]
-    },
-    set(target,key,val){
-      console.log('set')
-      return target[key] = val
-    }
-  })
-}
-datas = defineReactive(datas)
-datas.arr = [332]
-datas.arr.push(222);
-
 let objectWrap, gWrap, pathWrap;
 // control the animation
 let isInit = true;
