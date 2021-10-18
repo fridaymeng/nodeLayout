@@ -219,7 +219,8 @@ function init(params = {}) {
     add,
     option: params.option
   });
-  const svg = wrap.append("svg");
+  const wraps = wrap.append("div");
+  const svg = wraps.append("svg");
   // fill pattern
   svg.append("rect")
     .attr("width", "100%")
@@ -323,11 +324,13 @@ function init(params = {}) {
 }
 
 function add (params = {}) {
+  const x = params.x || svgWidth/10 + nodeData.data.length * 200;
+  const y = params.y || svgHeight/2;
   nodeData.push({
     id: uuid(16, 62),
     text: params.text || params + (nodeData.data.length + 1),
-    x: params.x || svgWidth/10 + nodeData.data.length * 200,
-    y: params.y || svgHeight/2
+    x: x - zoomX,
+    y: y - zoomY
   });
 }
 export { init, add };
