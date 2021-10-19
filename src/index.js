@@ -21,6 +21,10 @@ const svgHeight = 400;
 // the x,y change when zoom
 let zoomX = 0;
 let zoomY = 0;
+// onNodeClick 
+let onNodeClick;
+// onPathClick
+let onPathClick;
 
 const connectData = deepProxy((data) => {
   renderLines(data);
@@ -55,6 +59,7 @@ function renderNodes (params = {}) {
 
 // on click
 function handleClick (event, d) {
+  if (onNodeClick) onNodeClick(d);
   d3.selectAll(".unit-dis").attr("class", "unit-dis");
   d3.select(this).attr("class", "unit-dis selected");
 }
@@ -100,7 +105,10 @@ function renderLines (data) {
     .append("path")
     .attr("class", (d) => `start-${d.source} end-${d.target} connect-fixed-line`)
     .attr("marker-end","url(#arrowEnd)")
-    .attr("d", (d) => isInit ? `M0,0 0,0` : `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
+    .attr("d", (d) => isInit ? `M0,0 0,0` : `M${d.x1},${d.y1} ${d.x2},${d.y2}`)
+    .on("click", (event, d) => {
+      if (onPathClick) onPathClick(d);
+    });
   if (isInit) {
     allPath.transition()
       .duration(750)
@@ -247,11 +255,13 @@ function init(params = {}) {
     zoomY = d.transform.y;
     svgWrap.attr("transform", d.transform);
   }
-  if (!params.data) params.data = []
+  if (!params.data) params.data = [];
+  if (params.onNodeClick) onNodeClick = params.onNodeClick;
+  if (params.onPathClick) onPathClick = params.onPathClick;
   nodeData.data = params.data.map((item, index) => {
     return {
-      id: uuid(16, 62),
-      text: item,
+      id: uuid(),
+      text: item.title,
       x: svgWidth/10 + index * 200,
       y: svgHeight / 2
     };
@@ -327,8 +337,8 @@ function add (params = {}) {
   const x = params.x || svgWidth/10 + nodeData.data.length * 200;
   const y = params.y || svgHeight/2;
   nodeData.push({
-    id: uuid(16, 62),
-    text: params.text || params + (nodeData.data.length + 1),
+    id: uuid(),
+    text: params.title || params + (nodeData.data.length + 1),
     x: x - zoomX,
     y: y - zoomY
   });
