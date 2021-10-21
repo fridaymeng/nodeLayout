@@ -237,6 +237,9 @@ function init(params = {}) {
     .attr("width", "100%")
     .attr("height", svgHeight)
     .attr("fill", "url(#diagramPattern)")
+    .on("click", (event) => {
+      d3.selectAll(".unit-dis").attr("class", "unit-dis");
+    })
     .call(
       d3.zoom()
       .scaleExtent([.1, 100])
