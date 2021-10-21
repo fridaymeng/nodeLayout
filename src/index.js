@@ -146,14 +146,14 @@ function renderMain () {
     d.dy = event.sourceEvent.layerY - Math.sin(Math.PI / 180 * d.index * 90) * smallCirceRadius;
   }
   function smallCircleDraging (event, d) {
-    d.x1 = d.dx - zoomX;
-    d.y1 = d.dy - zoomY;
-    d.x2 = event.sourceEvent.layerX - zoomX;
-    d.y2 = event.sourceEvent.layerY - zoomY;
     const k = zoomK === 0 ? 1 : zoomK;
+    d.x1 = (d.dx - zoomX)/k;
+    d.y1 = (d.dy - zoomY)/k;
+    d.x2 = (event.sourceEvent.layerX - zoomX)/k;
+    d.y2 = (event.sourceEvent.layerY - zoomY)/k;
     d3.select(".connect-line")
       .attr("class", "connect-line show")
-      .attr("d", `M${d.x1/k},${d.y1/k} ${d.x2/k},${d.y2/k}`);
+      .attr("d", `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
     // M${d.x1},${d.y1} C${d.x2},${d.y1} ${d.x1},${d.y2}  ${d.x2},${d.y2}`)
   }
   function smallCircleDragend (event, d) {
