@@ -1,6 +1,6 @@
 # nodeLayout
 
-![nodeLayout](https://zkboxing.com/friday/static/media/connection.2be91f9c.png)
+<a href="zkboxing.com/nodelayout/" targer="_blank" />
 
 ## For Graph Layout or Edit.
 
