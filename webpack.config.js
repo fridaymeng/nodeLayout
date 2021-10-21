@@ -2,9 +2,9 @@
 const path = require('path');
 
 module.exports = {
-  devtool: 'source-map',
+  // devtool: 'source-map',
   entry: './src/index.js',
-  mode: 'production',
+  mode: 'development',
   output: {
     path: path.resolve(__dirname, 'lib'),
     filename: 'index.js',
@@ -32,7 +32,8 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'lib'),
     },
-    open: true,
+    // hot: true,
+    // open: true,
     compress: true,
     port: 9000,
   }

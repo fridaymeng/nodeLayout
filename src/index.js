@@ -21,6 +21,7 @@ const svgHeight = 400;
 // the x,y change when zoom
 let zoomX = 0;
 let zoomY = 0;
+let zoomK = 0;
 // onNodeClick 
 let onNodeClick;
 // onPathClick
@@ -149,9 +150,11 @@ function renderMain () {
     d.y1 = d.dy - zoomY;
     d.x2 = event.sourceEvent.layerX - zoomX;
     d.y2 = event.sourceEvent.layerY - zoomY;
+    const k = zoomK === 0 ? 1 : zoomK;
     d3.select(".connect-line")
       .attr("class", "connect-line show")
-      .attr("d", `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
+      .attr("d", `M${d.x1/k},${d.y1/k} ${d.x2/k},${d.y2/k}`);
+    // M${d.x1},${d.y1} C${d.x2},${d.y1} ${d.x1},${d.y2}  ${d.x2},${d.y2}`)
   }
   function smallCircleDragend (event, d) {
     d3.select(".connect-line").attr("class", "connect-line");
@@ -253,6 +256,7 @@ function init(params = {}) {
   function svgZoomed(d) {
     zoomX = d.transform.x;
     zoomY = d.transform.y;
+    zoomK = d.transform.k;
     svgWrap.attr("transform", d.transform);
   }
   if (!params.data) params.data = [];
