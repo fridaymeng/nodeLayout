@@ -7,11 +7,11 @@
 ### How to use
 
 ```bash
-yarn add nodeLayout
+yarn add nodelayout
 ```
 OR
 ```bash
-npm install nodeLayout
+npm install nodelayout
 ```
 
 ### Demo

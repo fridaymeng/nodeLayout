@@ -1,8 +1,9 @@
 {
   "name": "nodelayout",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "For node Layout.",
   "main": "lib/index.js",
+  "module": "lib/index.js",
   "scripts": {
     "start": "webpack serve",
     "watch": "webpack --watch",
