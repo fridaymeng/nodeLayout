@@ -1,6 +1,6 @@
 # nodeLayout
 
-<a href="https://zkboxing.com/nodeLayout/" targer="_blank">Demo</a>
+<a href="https://zkboxing.com/nodeLayout/" target="_blank">Demo</a>
 
 ## For Graph Layout or Edit.
 
