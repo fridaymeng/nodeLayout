@@ -343,11 +343,12 @@ function init(params = {}) {
 function add (params = {}) {
   const x = params.x || svgWidth/10 + nodeData.data.length * 200;
   const y = params.y || svgHeight/2;
+  const k = zoomK === 0 ? 1 : zoomK;
   nodeData.push({
     id: uuid(),
     text: params.title || params + (nodeData.data.length + 1),
-    x: x - zoomX,
-    y: y - zoomY
+    x: (x - zoomX) / k,
+    y: (y - zoomY) / k
   });
 }
 export { init, add };
