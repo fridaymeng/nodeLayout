@@ -156,7 +156,6 @@ function renderMain () {
     d.y2 = (event.sourceEvent.layerY - zoomY)/k;
     let pos = `M${d.x1},${d.y1} ${d.x2},${d.y2}`;
     if (connectType === "path") {
-      console.log(d);
       switch (d.index) {
         case 0:
           pos = `M${d.x1},${d.y1} C${d.x2},${d.y1} ${d.x1},${d.y2}  ${d.x2},${d.y2}`;
