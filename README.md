@@ -23,7 +23,7 @@ yarn start
 ```js
 nodeLayout.init({
   id: "node-wrap",
-  connectType: "line",
+  connectType: "line", // connectType: "path", // path or line
   onNodeClick: function (d) {
     console.log(d);
   },
