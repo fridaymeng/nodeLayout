@@ -23,13 +23,14 @@ yarn start
 ```js
 nodeLayout.init({
   id: "node-wrap",
+  connectType: "line",
   onNodeClick: function (d) {
     console.log(d);
   },
   onPathClick: function (d) {
     console.log(d);
   },
-  option: [{
+  list: [{
     title: "step1",
     id: 0
   }, {
@@ -51,13 +52,17 @@ nodeLayout.init({
     title: "step7",
     id: 6
   }],
-  data: [{
+  nodes: [{
     title: "step8",
     id: 0
   }, {
     title: "step9",
     id: 1
-  }] 
+  }],
+  lines: [{
+    source: 0,
+    target: 1
+  }]
 })
 ```
 ### Add

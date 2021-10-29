@@ -26,6 +26,8 @@ let zoomK = 0;
 let onNodeClick;
 // onPathClick
 let onPathClick;
+// line type
+let connectType = "line";
 
 const connectData = deepProxy((data) => {
   renderLines(data);
@@ -107,6 +109,7 @@ function renderLines (data) {
     .attr("class", (d) => `start-${d.source} end-${d.target} connect-fixed-line`)
     .attr("marker-end","url(#arrowEnd)")
     .attr("d", (d) => isInit ? `M0,0 0,0` : `M${d.x1},${d.y1} ${d.x2},${d.y2}`)
+    .attr("data-id", d => d.id)
     .on("click", (event, d) => {
       if (onPathClick) onPathClick(d);
     });
@@ -151,10 +154,29 @@ function renderMain () {
     d.y1 = (d.dy - zoomY)/k;
     d.x2 = (event.sourceEvent.layerX - zoomX)/k;
     d.y2 = (event.sourceEvent.layerY - zoomY)/k;
+    let pos = `M${d.x1},${d.y1} ${d.x2},${d.y2}`;
+    if (connectType === "path") {
+      console.log(d);
+      switch (d.index) {
+        case 0:
+          pos = `M${d.x1},${d.y1} C${d.x2},${d.y1} ${d.x1},${d.y2}  ${d.x2},${d.y2}`;
+        break;
+        case 1:
+          pos = `M${d.x1},${d.y1} C${d.x1},${d.y2} ${d.x2},${d.y1}  ${d.x2},${d.y2}`;
+        break;
+        case 2:
+          pos = `M${d.x1},${d.y1} C${d.x2},${d.y1} ${d.x1},${d.y2}  ${d.x2},${d.y2}`;
+        break;
+        case 3:
+          pos = `M${d.x1},${d.y1} C${d.x1},${d.y2} ${d.x2},${d.y1}  ${d.x2},${d.y2}`;
+        break;
+        default:
+          pos = `M${d.x1},${d.y1} ${d.x2},${d.y2}`;
+      }
+    }
     d3.select(".connect-line")
       .attr("class", "connect-line show")
-      .attr("d", `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
-    // M${d.x1},${d.y1} C${d.x2},${d.y1} ${d.x1},${d.y2}  ${d.x2},${d.y2}`)
+      .attr("d", pos);
   }
   function smallCircleDragend (event, d) {
     d3.select(".connect-line").attr("class", "connect-line");
@@ -225,10 +247,11 @@ function renderMain () {
 
 function init(params = {}) {
   const wrap = d3.select(`#${params.id}`).attr("height", svgHeight);
+  connectType = params.connectType || "line"
   renderOptionList({
     wrap,
     add,
-    option: params.option
+    option: params.list
   });
   const wraps = wrap.append("div");
   const svg = wraps.append("svg");
@@ -262,27 +285,33 @@ function init(params = {}) {
     zoomK = d.transform.k;
     svgWrap.attr("transform", d.transform);
   }
-  if (!params.data) params.data = [];
+  if (!params.nodes) params.nodes = [];
   if (params.onNodeClick) onNodeClick = params.onNodeClick;
   if (params.onPathClick) onPathClick = params.onPathClick;
-  nodeData.data = params.data.map((item, index) => {
+  nodeData.data = params.nodes.map((item, index) => {
     return {
-      id: uuid(),
+      id: item.id,
       text: item.title,
       x: svgWidth/10 + index * 200,
       y: svgHeight / 2
     };
   });
-  connectData.push({
-    source: nodeData.data[0].id,
-    target: nodeData.data[1].id,
-    startIndex: 0,
-    endIndex: 2,
-    x1: nodeData.data[0].x + Math.cos(Math.PI / 180 * 2 * 90) * mainCirceRadius,
-    y1: nodeData.data[0].y + Math.sin(Math.PI / 180 * 0 * 90) * mainCirceRadius,
-    x2: nodeData.data[1].x + Math.cos(Math.PI / 180 * 2 * 90) * mainCirceRadius,
-    y2: nodeData.data[1].y + Math.sin(Math.PI / 180 * 0 * 90) * mainCirceRadius
-  });
+  // node connect line
+  if (params.lines) {
+    params.lines.forEach(item => {
+      connectData.push({
+        id: uuid(),
+        source: item.source,
+        target: item.target,
+        startIndex: 0,
+        endIndex: 2,
+        x1: nodeData.data[0].x + Math.cos(Math.PI / 180 * 2 * 90) * mainCirceRadius,
+        y1: nodeData.data[0].y + Math.sin(Math.PI / 180 * 0 * 90) * mainCirceRadius,
+        x2: nodeData.data[1].x + Math.cos(Math.PI / 180 * 2 * 90) * mainCirceRadius,
+        y2: nodeData.data[1].y + Math.sin(Math.PI / 180 * 0 * 90) * mainCirceRadius
+      });
+    });
+  }
   // arrow  
   let markerWrap = svg.append("defs");  
   markerWrap.append("marker")  
