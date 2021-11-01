@@ -12,7 +12,8 @@ let nodeData = deepProxy((data) => {
   renderNodes({
     data
   });
-});;
+});
+
 // circle radius
 const mainCirceRadius = 25;
 const smallCirceRadius = 5;
@@ -28,6 +29,8 @@ let onNodeClick;
 let onPathClick;
 // line type
 let connectType = "line";
+// node type
+let nodeType = "circle";
 
 const connectData = deepProxy((data) => {
   renderLines(data);
@@ -158,13 +161,13 @@ function renderMain () {
     if (connectType === "path") {
       switch (d.index) {
         case 0:
-          pos = `M${d.x1},${d.y1} C${d.x2},${d.y1} ${d.x1},${d.y2}  ${d.x2},${d.y2}`;
+          pos = `M${d.x1},${d.y1} C${(d.x1 + d.x2)/2},${d.y1} ${(d.x2 + d.x1)/2},${d.y2}  ${d.x2},${d.y2}`;
         break;
         case 1:
           pos = `M${d.x1},${d.y1} C${d.x1},${d.y2} ${d.x2},${d.y1}  ${d.x2},${d.y2}`;
         break;
         case 2:
-          pos = `M${d.x1},${d.y1} C${d.x2},${d.y1} ${d.x1},${d.y2}  ${d.x2},${d.y2}`;
+          pos = `M${d.x1},${d.y1} C${(d.x2 + d.x1)/2},${d.y1} ${(d.x1 + d.x2)/2},${d.y2}  ${d.x2},${d.y2}`;
         break;
         case 3:
           pos = `M${d.x1},${d.y1} C${d.x1},${d.y2} ${d.x2},${d.y1}  ${d.x2},${d.y2}`;
@@ -194,11 +197,24 @@ function renderMain () {
     }
   }
   // main circle
-  objectWrap.append("circle")
-    .attr("fill", "#fff")
-    .attr("class", "main-circle")
-    .attr("stroke", "#227AE6")
-    .attr("r", mainCirceRadius);
+  if (nodeType === "rect") {
+    objectWrap.append("rect")
+      .attr("fill", "#fff")
+      .attr("class", "main-circle")
+      .attr("stroke", "#227AE6")
+      .attr("x", -mainCirceRadius)
+      .attr("y", -mainCirceRadius)
+      .attr("rx", 5)
+      .attr("ry", 5)
+      .attr("height", mainCirceRadius * 2)
+      .attr("width", mainCirceRadius * 2);
+  } else {
+    objectWrap.append("circle")
+      .attr("fill", "#fff")
+      .attr("class", "main-circle")
+      .attr("stroke", "#227AE6")
+      .attr("r", mainCirceRadius);
+  }
   // small circle
   const smallCircelData = [{
     x : mainCirceRadius,
@@ -247,6 +263,7 @@ function renderMain () {
 function init(params = {}) {
   const wrap = d3.select(`#${params.id}`).attr("height", svgHeight);
   connectType = params.connectType || "line"
+  nodeType = params.nodeType || "circle"
   renderOptionList({
     wrap,
     add,
