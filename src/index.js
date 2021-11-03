@@ -31,6 +31,9 @@ let onPathClick;
 let connectType = "line";
 // node type
 let nodeType = "circle";
+// offset size
+let leftSize = 0;
+let topSize = 0;
 
 const connectData = deepProxy((data) => {
   renderLines(data);
@@ -262,6 +265,9 @@ function renderMain () {
 
 function init(params = {}) {
   const wrap = d3.select(`#${params.id}`).attr("height", svgHeight);
+  const queryWrap = document.querySelector(`#${params.id}`)
+  leftSize = queryWrap.offsetLeft
+  topSize = queryWrap.offsetTop
   connectType = params.connectType || "line"
   nodeType = params.nodeType || "circle"
   renderOptionList({
@@ -394,8 +400,8 @@ function add (params = {}) {
   nodeData.push({
     id: uuid(),
     text: params.title || params + (nodeData.data.length + 1),
-    x: (x - zoomX) / k,
-    y: (y - zoomY) / k
+    x: (x - zoomX) / k - leftSize,
+    y: (y - zoomY) / k - topSize
   });
 }
 export { init, add };
