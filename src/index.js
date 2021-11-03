@@ -315,16 +315,18 @@ function init(params = {}) {
   // node connect line
   if (params.lines) {
     params.lines.forEach(item => {
+      const startIndex = 0
+      const endIndex = 2
       connectData.push({
         id: uuid(),
         source: item.source,
         target: item.target,
-        startIndex: 0,
-        endIndex: 2,
-        x1: nodeData.data[0].x + Math.cos(Math.PI / 180 * 2 * 90) * mainCirceRadius,
-        y1: nodeData.data[0].y + Math.sin(Math.PI / 180 * 0 * 90) * mainCirceRadius,
-        x2: nodeData.data[1].x + Math.cos(Math.PI / 180 * 2 * 90) * mainCirceRadius,
-        y2: nodeData.data[1].y + Math.sin(Math.PI / 180 * 0 * 90) * mainCirceRadius
+        startIndex: startIndex,
+        endIndex: endIndex,
+        x1: nodeData.data[0].x + Math.cos(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
+        y1: nodeData.data[0].y + Math.sin(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
+        x2: nodeData.data[1].x + Math.cos(Math.PI / 180 * endIndex * 90) * mainCirceRadius,
+        y2: nodeData.data[1].y + Math.sin(Math.PI / 180 * endIndex * 90) * mainCirceRadius
       });
     });
   }
