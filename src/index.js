@@ -18,7 +18,7 @@ let nodeData = deepProxy((data) => {
 const mainCirceRadius = 25;
 const smallCirceRadius = 5;
 const svgWidth = 1000;
-const svgHeight = 400;
+const svgHeight = 800;
 // the x,y change when zoom
 let zoomX = 0;
 let zoomY = 0;
@@ -119,13 +119,14 @@ function renderLines (data) {
     .on("click", (event, d) => {
       if (onPathClick) onPathClick(d);
     });
+  console.log(isInit)
   if (isInit) {
     allPath.transition()
       .duration(750)
       .delay(function(d, i) { return i * 10; })
       .attr("d", (d) => `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
   }
-  isInit = false;
+  // isInit = false;
 }
 
 function handleDeleteNode(event, d) {
@@ -310,17 +311,25 @@ function init(params = {}) {
   if (!params.nodes) params.nodes = [];
   if (params.onNodeClick) onNodeClick = params.onNodeClick;
   if (params.onPathClick) onPathClick = params.onPathClick;
-  nodeData.data = params.nodes.map((item, index) => {
+  /* nodeData.data = params.nodes.map((item, index) => {
     return {
       id: item.id,
       text: item.title,
       x: svgWidth/10 + index * 200,
       y: svgHeight / 2
     };
+  }); */
+  nodeData.data = params.nodes.map((item, index) => {
+    return {
+      id: item.id,
+      text: item.title,
+      x: Math.sin(Math.PI / 180 * index * 360/params.nodes.length) * 350 + svgWidth/2,
+      y: Math.cos(Math.PI / 180 * index * 360/params.nodes.length) * 350 + svgHeight/2
+    };
   });
   // node connect line
   if (params.lines) {
-    params.lines.forEach(item => {
+    params.lines.forEach((item, index) => {
       const startIndex = 0
       const endIndex = 2
       connectData.push({
@@ -331,8 +340,8 @@ function init(params = {}) {
         endIndex: endIndex,
         x1: nodeData.data[0].x + Math.cos(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
         y1: nodeData.data[0].y + Math.sin(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
-        x2: nodeData.data[1].x + Math.cos(Math.PI / 180 * endIndex * 90) * mainCirceRadius,
-        y2: nodeData.data[1].y + Math.sin(Math.PI / 180 * endIndex * 90) * mainCirceRadius
+        x2: nodeData.data[index + 1].x + Math.cos(Math.PI / 180 * endIndex * 90) * mainCirceRadius,
+        y2: nodeData.data[index + 1].y + Math.sin(Math.PI / 180 * endIndex * 90) * mainCirceRadius
       });
     });
   }

@@ -19,6 +19,28 @@
   >Add</button>
   <script src="index.js"></script>
   <script>
+    const nodes = [{
+      title: "step8",
+      id: "0"
+    }, {
+      title: "step9",
+      id: "1"
+    }];
+    const lines = [{
+      source: "0",
+      target: "1"
+    }];
+    for (let i = 0; i < 100; i ++) {
+      const id = Math.random() + '';
+      nodes.push({
+        id,
+        title: Number.parseInt(Math.random() * 1000000)
+      })
+      lines.push({
+        source: nodes[i].id,
+        target: nodes[i+1].id
+      })
+    }
     nodeLayout.init({
       id: "node-wrap",
       connectType: "line", // path or line
@@ -51,17 +73,8 @@
         title: "step7",
         id: "6"
       }],
-      nodes: [{
-        title: "step8",
-        id: "0"
-      }, {
-        title: "step9",
-        id: "1"
-      }],
-      lines: [{
-        source: "0",
-        target: "1"
-      }]
+      nodes,
+      lines
     })
     function add () {
       nodeLayout.add({
