@@ -402,8 +402,8 @@ function init(params = {}) {
 }
 
 function add (params = {}) {
-  const x = Math.random() * 1000;
-  const y = Math.random() * 600 + 100;
+  const x = params.x || Math.random() * 1000;
+  const y = params.y || Math.random() * 600 + 200;
   const k = zoomK === 0 ? 1 : zoomK;
   nodeData.push({
     id: uuid(),
