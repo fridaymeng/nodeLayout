@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 import uuid from "./utils/uuid";
-import deepProxy from "./utils/deepProxy";
 import renderOptionList from "./optionList";
 import { defaultIcon, deletIcon } from "./utils/icon";
 import "./less/index.less";
@@ -8,11 +7,6 @@ import "./less/index.less";
 let objectWrap, gWrap, pathWrap;
 // control the animation
 let isInit = true;
-let nodeData = deepProxy((data) => {
-  renderNodes({
-    data
-  });
-});
 
 // circle radius
 const mainCirceRadius = 25;
@@ -35,9 +29,8 @@ let nodeType = "circle";
 let leftSize = 0;
 let topSize = 0;
 
-const connectData = deepProxy((data) => {
-  renderLines(data);
-});
+let nodeData = [];
+let connectData = [];
 
 // main circle drag
 const drag = d3
@@ -45,6 +38,45 @@ const drag = d3
   .on("start", dragstart)
   .on("drag", draging)
   .on("end", dragend);
+
+// on click
+function handleClick (event, d) {
+  if (onNodeClick) onNodeClick(d);
+  d3.selectAll(".unit-dis").attr("class", "unit-dis");
+  d3.select(this).attr("class", "unit-dis selected");
+}
+
+// drag start
+function dragstart (event, d) {
+  // d3.select(this).classed("fixed", false);
+  d.dx = event.sourceEvent.x;
+  d.dy = event.sourceEvent.y;
+}
+// draging
+function draging (event, d) {
+  const $this = this;
+  d.xp = d.x - (d.dx - event.sourceEvent.x);
+  d.yp = d.y - (d.dy - event.sourceEvent.y);
+  connectData.forEach(item => {
+    const index = item.source === d.id ? item.startIndex : item.endIndex;
+    const xValue = Math.cos(Math.PI / 180 * index * 90) * mainCirceRadius;
+    const yValue = Math.sin(Math.PI / 180 * index * 90) * mainCirceRadius;
+    if (item.source === d.id) {
+      item.x1 = d.xp + xValue;
+      item.y1 = d.yp + yValue;
+    } else if (item.target === d.id) {
+      item.x2 = d.xp + xValue;
+      item.y2 = d.yp + yValue;
+    }
+  });
+  renderLines({ data: connectData });
+  d3.select($this).attr("transform", () => `translate(${d.xp}, ${d.yp})`);
+}
+// drag end
+function dragend (event, d) {
+  d.x = d.xp || event.sourceEvent.x;
+  d.y = d.yp || event.sourceEvent.y;
+}
 
 function renderNodes (params = {}) {
   d3.selectAll(".unit-dis").remove();
@@ -66,50 +98,11 @@ function renderNodes (params = {}) {
   renderMain();
 }
 
-// on click
-function handleClick (event, d) {
-  if (onNodeClick) onNodeClick(d);
-  d3.selectAll(".unit-dis").attr("class", "unit-dis");
-  d3.select(this).attr("class", "unit-dis selected");
-}
-
-// drag start
-function dragstart (event, d) {
-  // d3.select(this).classed("fixed", false);
-  d.dx = event.sourceEvent.x;
-  d.dy = event.sourceEvent.y;
-}
-// draging
-function draging (event, d) {
-  const $this = this;
-  d.xp = d.x - (d.dx - event.sourceEvent.x);
-  d.yp = d.y - (d.dy - event.sourceEvent.y);
-  connectData.data.forEach(item => {
-    const index = item.source === d.id ? item.startIndex : item.endIndex;
-    const xValue = Math.cos(Math.PI / 180 * index * 90) * mainCirceRadius;
-    const yValue = Math.sin(Math.PI / 180 * index * 90) * mainCirceRadius;
-    if (item.source === d.id) {
-      item.x1 = d.xp + xValue;
-      item.y1 = d.yp + yValue;
-    } else if (item.target === d.id) {
-      item.x2 = d.xp + xValue;
-      item.y2 = d.yp + yValue;
-    }
-  });
-  renderLines(connectData.data);
-  d3.select($this).attr("transform", () => `translate(${d.xp}, ${d.yp})`);
-}
-// drag end
-function dragend (event, d) {
-  d.x = d.xp || event.sourceEvent.x;
-  d.y = d.yp || event.sourceEvent.y;
-}
-
 // draw connect lines
-function renderLines (data) {
+function renderLines (params = {}) {
   pathWrap.selectAll(".connect-fixed-line").remove();
   const allPath = pathWrap.selectAll(".connect-fixed-line")
-    .data(data)
+    .data(params.data)
     .enter()
     .append("path")
     .attr("class", (d) => `start-${d.source} end-${d.target} connect-fixed-line`)
@@ -119,21 +112,22 @@ function renderLines (data) {
     .on("click", (event, d) => {
       if (onPathClick) onPathClick(d);
     });
-  console.log(isInit)
   if (isInit) {
     allPath.transition()
       .duration(750)
       .delay(function(d, i) { return i * 10; })
       .attr("d", (d) => `M${d.x1},${d.y1} ${d.x2},${d.y2}`);
   }
-  // isInit = false;
+  isInit = false;
 }
 
 function handleDeleteNode(event, d) {
-  nodeData.data = nodeData.data.filter (item => d.id !== item.id);
-  connectData.data = connectData.data.filter (item => {
+  nodeData = nodeData.filter (item => d.id !== item.id);
+  renderNodes({ data: nodeData });
+  connectData = connectData.filter (item => {
     return item.source !== d.id && item.target !== d.id;
-  })
+  });
+  renderLines({ data: connectData });
 }
 
 function renderMain () {
@@ -198,6 +192,7 @@ function renderMain () {
         x2: d.x2,
         y2: d.y2
       });
+      renderLines({ data: connectData });
     }
   }
   // main circle
@@ -311,7 +306,7 @@ function init(params = {}) {
   if (!params.nodes) params.nodes = [];
   if (params.onNodeClick) onNodeClick = params.onNodeClick;
   if (params.onPathClick) onPathClick = params.onPathClick;
-  /* nodeData.data = params.nodes.map((item, index) => {
+  /* nodeData = params.nodes.map((item, index) => {
     return {
       id: item.id,
       text: item.title,
@@ -319,31 +314,35 @@ function init(params = {}) {
       y: svgHeight / 2
     };
   }); */
-  nodeData.data = params.nodes.map((item, index) => {
+  nodeData = params.nodes.map((item, index) => {
     return {
       id: item.id,
       text: item.title,
-      x: Math.sin(Math.PI / 180 * index * 360/params.nodes.length) * 350 + svgWidth/2,
-      y: Math.cos(Math.PI / 180 * index * 360/params.nodes.length) * 350 + svgHeight/2
+      x: 100 * index + 200,
+      y: svgHeight/5
     };
   });
+  nodeData[0].x = 700;
+  nodeData[0].y = svgHeight/2 + 100;
+  renderNodes({ data: nodeData });
   // node connect line
   if (params.lines) {
     params.lines.forEach((item, index) => {
-      const startIndex = 0
-      const endIndex = 2
+      const startIndex = 3
+      const endIndex = 1
       connectData.push({
         id: uuid(),
         source: item.source,
         target: item.target,
         startIndex: startIndex,
         endIndex: endIndex,
-        x1: nodeData.data[0].x + Math.cos(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
-        y1: nodeData.data[0].y + Math.sin(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
-        x2: nodeData.data[index + 1].x + Math.cos(Math.PI / 180 * endIndex * 90) * mainCirceRadius,
-        y2: nodeData.data[index + 1].y + Math.sin(Math.PI / 180 * endIndex * 90) * mainCirceRadius
+        x1: nodeData[0].x + Math.cos(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
+        y1: nodeData[0].y + Math.sin(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
+        x2: nodeData[index + 1].x + Math.cos(Math.PI / 180 * endIndex * 90) * mainCirceRadius,
+        y2: nodeData[index + 1].y + Math.sin(Math.PI / 180 * endIndex * 90) * mainCirceRadius
       });
     });
+    renderLines({ data: connectData });
   }
   // arrow  
   let markerWrap = svg.append("defs");  
@@ -403,14 +402,15 @@ function init(params = {}) {
 }
 
 function add (params = {}) {
-  const x = params.x || svgWidth/10 + nodeData.data.length * 200;
-  const y = params.y || svgHeight/2;
+  const x = Math.random() * 1000;
+  const y = Math.random() * 600 + 100;
   const k = zoomK === 0 ? 1 : zoomK;
   nodeData.push({
     id: uuid(),
-    text: params.title || params + (nodeData.data.length + 1),
+    text: params.title || params + (nodeData.length + 1),
     x: (x - zoomX) / k - leftSize,
     y: (y - zoomY) / k - topSize
   });
+  renderNodes({ data: nodeData });
 }
 export { init, add };

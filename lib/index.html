@@ -19,25 +19,19 @@
   >Add</button>
   <script src="index.js"></script>
   <script>
-    const nodes = [{
-      title: "step8",
-      id: "0"
-    }, {
-      title: "step9",
-      id: "1"
-    }];
-    const lines = [{
-      source: "0",
-      target: "1"
-    }];
-    for (let i = 0; i < 100; i ++) {
+    const nodes = [];
+    const lines = [];
+    for (let i = 0; i < 10; i ++) {
       const id = Math.random() + '';
       nodes.push({
         id,
         title: Number.parseInt(Math.random() * 1000000)
       })
+    }
+    for (let i = 0; i < 9; i ++) { 
       lines.push({
-        source: nodes[i].id,
+        id: Math.random() + '',
+        source: nodes[0].id,
         target: nodes[i+1].id
       })
     }
