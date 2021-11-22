@@ -56,7 +56,9 @@ nodelayout.init({
       }],
       nodes: [{
         title: "step8",
-        id: "0"
+        id: "0",
+        x: 100,
+        y: 200
       }, {
         title: "step9",
         id: "1"
