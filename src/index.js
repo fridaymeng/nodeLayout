@@ -267,7 +267,7 @@ function renderMain () {
 }
 
 function init(params = {}) {
-  const wrap = d3.select(`#${params.id}`).attr("height", svgHeight);
+  const wrap = d3.select(`#${params.id}`).attr("height", svgHeight).html("");
   const queryWrap = document.querySelector(`#${params.id}`)
   leftSize = queryWrap.offsetLeft
   topSize = queryWrap.offsetTop
@@ -339,6 +339,7 @@ function init(params = {}) {
   renderNodes({ data: nodeData });
   // node connect line
   if (params.lines) {
+    connectData = []
     params.lines.forEach((item, index) => {
       const startIndex = item.startIndex
       const endIndex = item.endIndex
