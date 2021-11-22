@@ -65,7 +65,9 @@ nodelayout.init({
       }],
       lines: [{
         source: "0",
-        target: "1"
+        target: "1",
+        startIndex: 0, //0, 1, 2, 3
+        endIndex: 3
       }]
     })
 ```

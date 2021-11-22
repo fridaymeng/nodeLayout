@@ -340,8 +340,8 @@ function init(params = {}) {
   // node connect line
   if (params.lines) {
     params.lines.forEach((item, index) => {
-      const startIndex = item.startIndex || 3
-      const endIndex = item.endIndex || 1
+      const startIndex = item.startIndex !== undefined ? item.startIndex : 3
+      const endIndex = item.endIndex !== undefined ? item.startIndex : 1
       connectData.push({
         id: uuid(),
         source: item.source,

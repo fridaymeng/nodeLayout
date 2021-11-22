@@ -1,6 +1,6 @@
 {
   "name": "nodelayout",
-  "version": "1.3.6",
+  "version": "1.3.8",
   "description": "For node Layout.",
   "main": "lib/index.js",
   "module": "lib/index.js",
