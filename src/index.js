@@ -43,7 +43,16 @@ const drag = d3
 function handleClick (event, d) {
   if (onNodeClick) onNodeClick(d);
   d3.selectAll(".unit-dis").attr("class", "unit-dis");
+  d3.selectAll('.connect-fixed-line').attr('data-selected', '')
   d3.select(this).attr("class", "unit-dis selected");
+}
+
+// on path click
+function handlePathClick (event, d) {
+  d3.selectAll(".unit-dis").attr("class", "unit-dis");
+  d3.selectAll('.connect-fixed-line').attr('data-selected', '')
+  d3.select(this).attr("data-selected", true);
+  if (onPathClick) onPathClick(d);
 }
 
 // drag start
@@ -109,9 +118,7 @@ function renderLines (params = {}) {
     .attr("marker-end","url(#arrowEnd)")
     .attr("d", (d) => isInit ? `M0,0 0,0` : `M${d.x1},${d.y1} ${d.x2},${d.y2}`)
     .attr("data-id", d => d.id)
-    .on("click", (event, d) => {
-      if (onPathClick) onPathClick(d);
-    });
+    .on("click", handlePathClick);
   if (isInit) {
     allPath.transition()
       .duration(750)
@@ -318,8 +325,8 @@ function init(params = {}) {
     return {
       id: item.id,
       text: item.title,
-      x: 100 * index + 200,
-      y: svgHeight/5
+      x: item.x || 100 * index + 200,
+      y: item.y || svgHeight/5
     };
   });
   nodeData[0].x = 700;
@@ -336,10 +343,10 @@ function init(params = {}) {
         target: item.target,
         startIndex: startIndex,
         endIndex: endIndex,
-        x1: nodeData[0].x + Math.cos(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
-        y1: nodeData[0].y + Math.sin(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
-        x2: nodeData[index + 1].x + Math.cos(Math.PI / 180 * endIndex * 90) * mainCirceRadius,
-        y2: nodeData[index + 1].y + Math.sin(Math.PI / 180 * endIndex * 90) * mainCirceRadius
+        x1: item.x1 || nodeData[0].x + Math.cos(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
+        y1: item.y1 || nodeData[0].y + Math.sin(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
+        x2: item.x2 || nodeData[index + 1].x + Math.cos(Math.PI / 180 * endIndex * 90) * mainCirceRadius,
+        y2: item.y2 || nodeData[index + 1].y + Math.sin(Math.PI / 180 * endIndex * 90) * mainCirceRadius
       });
     });
     renderLines({ data: connectData });

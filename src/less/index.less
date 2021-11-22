@@ -3,6 +3,9 @@
   background: #fff;
   border-radius: 5px;
   width: 100%;
+  @keyframes marchingants {
+    to { stroke-dashoffset: 19; }
+  }
   svg {
     .small-circle {
       opacity: 0;
@@ -12,12 +15,16 @@
     g.unit-dis {
       stroke-width: 1px;
       &.selected {
-        stroke-width: 2px;
+        stroke-dasharray: 5;
         .small-circle {
           opacity: 1;
         }
         .delete-circle {
           opacity: 1;
+        }
+        rect {
+          animation: marchingants 1s forwards infinite linear;
+          stroke-width: 2px;
         }
       }
       &:hover {
@@ -45,6 +52,10 @@
     .connect-fixed-line {
       stroke: #111;
       stroke-width: 2px;
+      &[data-selected="true"] {
+        stroke-dasharray: 5;
+        animation: marchingants 1s reverse forwards infinite linear;
+      }
     }
   }
   .svg-option-list {
