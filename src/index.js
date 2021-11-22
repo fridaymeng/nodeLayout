@@ -321,7 +321,12 @@ function init(params = {}) {
       y: svgHeight / 2
     };
   }); */
+  const nodePosition = {}
   nodeData = params.nodes.map((item, index) => {
+    nodePosition[item.id] = {
+      x: item.x || 100 * index + 200,
+      y: item.y || svgHeight/5
+    }
     return {
       id: item.id,
       text: item.title,
@@ -329,8 +334,8 @@ function init(params = {}) {
       y: item.y || svgHeight/5
     };
   });
-  nodeData[0].x = 700;
-  nodeData[0].y = svgHeight/2 + 100;
+  /* nodeData[0].x = 700;
+  nodeData[0].y = svgHeight/2 + 100; */
   renderNodes({ data: nodeData });
   // node connect line
   if (params.lines) {
@@ -341,12 +346,12 @@ function init(params = {}) {
         id: uuid(),
         source: item.source,
         target: item.target,
-        startIndex: startIndex,
-        endIndex: endIndex,
-        x1: item.x1 || nodeData[0].x + Math.cos(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
-        y1: item.y1 || nodeData[0].y + Math.sin(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
-        x2: item.x2 || nodeData[index + 1].x + Math.cos(Math.PI / 180 * endIndex * 90) * mainCirceRadius,
-        y2: item.y2 || nodeData[index + 1].y + Math.sin(Math.PI / 180 * endIndex * 90) * mainCirceRadius
+        startIndex: item.startIndex || startIndex,
+        endIndex: item.endIndex || endIndex,
+        x1: nodePosition[item.source].x + Math.cos(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
+        y1: nodePosition[item.source].y + Math.sin(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
+        x2: nodePosition[item.target].x + Math.cos(Math.PI / 180 * endIndex * 90) * mainCirceRadius,
+        y2: nodePosition[item.target].y + Math.sin(Math.PI / 180 * endIndex * 90) * mainCirceRadius
       });
     });
     renderLines({ data: connectData });
