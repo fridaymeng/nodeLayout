@@ -340,14 +340,14 @@ function init(params = {}) {
   // node connect line
   if (params.lines) {
     params.lines.forEach((item, index) => {
-      const startIndex = 3
-      const endIndex = 1
+      const startIndex = item.startIndex || 3
+      const endIndex = item.endIndex || 1
       connectData.push({
         id: uuid(),
         source: item.source,
         target: item.target,
-        startIndex: item.startIndex || startIndex,
-        endIndex: item.endIndex || endIndex,
+        startIndex: startIndex,
+        endIndex: endIndex,
         x1: nodePosition[item.source].x + Math.cos(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
         y1: nodePosition[item.source].y + Math.sin(Math.PI / 180 * startIndex * 90) * mainCirceRadius,
         x2: nodePosition[item.target].x + Math.cos(Math.PI / 180 * endIndex * 90) * mainCirceRadius,
