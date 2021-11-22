@@ -31,6 +31,8 @@
     for (let i = 0; i < 9; i ++) { 
       lines.push({
         id: Math.random() + '',
+        startIndex: 0,
+        endIndex: 1,
         source: nodes[0].id,
         target: nodes[i+1].id
       })
