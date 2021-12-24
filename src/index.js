@@ -278,7 +278,7 @@ class NodeLayout {
     this.nodeType = params.nodeType || "circle"
     renderOptionList({
       wrap,
-      add,
+      add: (params = {}) => this.add(params),
       option: params.list
     });
     const wraps = wrap.append("div");
