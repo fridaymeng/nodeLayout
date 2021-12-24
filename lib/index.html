@@ -12,13 +12,28 @@
   </style>
 </head>
 <body>
+  <div style="padding: 0 0 10px;">
+    <button
+      onmousedown="add()"
+      style="padding: 10px 30px; margin: 5px 0 0 0; background: #fff; border: 1px solid #aaa; border-radius: 5px; cursor: pointer;"
+    >Add</button>
+    <button
+      onmousedown="zoomIn()"
+      style="padding: 10px 30px; margin: 5px 0 0 0; background: #fff; border: 1px solid #aaa; border-radius: 5px; cursor: pointer;"
+    >ZoomIn</button>
+    <button
+      onmousedown="zoomOut()"
+      style="padding: 10px 30px; margin: 5px 0 0 0; background: #fff; border: 1px solid #aaa; border-radius: 5px; cursor: pointer;"
+    >ZoomOut</button>
+    <button
+      onmousedown="reset()"
+      style="padding: 10px 30px; margin: 5px 0 0 0; background: #fff; border: 1px solid #aaa; border-radius: 5px; cursor: pointer;"
+    >Reset</button>
+  </div>
   <div id="node-wrap"></div>
-  <button
-    onmousedown="add()"
-    style="padding: 10px 30px; margin: 5px 0 0 0; background: #fff; border: 1px solid #aaa; border-radius: 5px; cursor: pointer;"
-  >Add</button>
   <script src="index.js"></script>
   <script>
+    const nodeLayouts = new nodeLayout.NodeLayout()
     const nodes = [];
     const lines = [];
     for (let i = 0; i < 10; i ++) {
@@ -37,7 +52,7 @@
         target: nodes[i+1].id
       })
     }
-    nodeLayout.init({
+    nodeLayouts.init({
       id: "node-wrap",
       connectType: "line", // path or line
       nodeType: "rect", // rect or circle
@@ -73,10 +88,19 @@
       lines
     })
     function add () {
-      nodeLayout.add({
+      nodeLayouts.add({
         title: 'step',
         id: Math.random() + ''
       });
+    }
+    function zoomIn () {
+      nodeLayouts.zoomIn()
+    }
+    function zoomOut () {
+      nodeLayouts.zoomOut()
+    }
+    function reset () {
+      nodeLayouts.reset()
     }
   </script>
 </body>
