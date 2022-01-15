@@ -22,7 +22,8 @@ yarn start
 ### Init
 ```js
 import * as nodelayout from "nodelayout";
-nodelayout.init({
+const nodeLayouts = new nodelayout.NodeLayout();
+nodeLayouts.init({
       id: "node-wrap",
       connectType: "line", // path or line
       nodeType: "rect", // rect or circle
@@ -73,7 +74,7 @@ nodelayout.init({
 ```
 ### Add
 ```js
-nodelayout.add({
+nodeLayouts.add({
   title: 'step',
   id: Math.random() + ''
 });

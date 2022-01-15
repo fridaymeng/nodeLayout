@@ -316,10 +316,6 @@ class NodeLayout {
     this.nodeData = params.nodes.map((item, index) => {
       let x = item.x || 100 * index + 200
       let y = item.y || this.svgHeight/5
-      if (index === 0) {
-        x = 250
-        y = 400
-      }
       this.nodePosition[item.id] = {
         x,
         y
