@@ -48,7 +48,7 @@ class NodeLayout {
       .on("end", this.dragend);
     this.smallCircleDrag = d3
       .drag()
-      .on("start", function (event, d) { $this.smallCircleDragstart(event, d, $this) })
+      .on("start", function (event, d) { $this.smallCircleDragstart(event, d, $this, this) })
       .on("drag", function (event, d) { $this.smallCircleDraging(event, d, $this) })
       .on("end", function (event, d) { $this.smallCircleDragend(event, d, $this, this) });
     this.handleDeleteNode = this.handleDeleteNode.bind(this);
@@ -143,7 +143,9 @@ class NodeLayout {
     });
     this.renderLines({ data: this.connectData });
   }
-  smallCircleDragstart (event, d, $this) {
+  smallCircleDragstart (event, d, $this, $that) {
+    d3.selectAll(".unit-dis").attr("data-ready", "true");
+    d3.select($that.parentNode).attr("data-ready", "");
     d.dx = event.sourceEvent.layerX - Math.cos(Math.PI / 180 * d.index * 90) * $this.smallCirceRadius;
     d.dy = event.sourceEvent.layerY - Math.sin(Math.PI / 180 * d.index * 90) * $this.smallCirceRadius;
   }
@@ -177,6 +179,7 @@ class NodeLayout {
       .attr("d", pos);
   }
   smallCircleDragend (event, d, $this, $that) {
+    d3.selectAll(".unit-dis").attr("data-ready", "");
     d3.select(".connect-line").attr("class", "connect-line");
     const hasAcitve = document.querySelector(".small-circle.active");
     if (hasAcitve) {
@@ -310,14 +313,6 @@ class NodeLayout {
     if (!params.nodes) params.nodes = [];
     if (params.onNodeClick) this.onNodeClick = params.onNodeClick;
     if (params.onPathClick) this.onPathClick = params.onPathClick;
-    /* nodeData = params.nodes.map((item, index) => {
-      return {
-        id: item.id,
-        text: item.title,
-        x: svgWidth/10 + index * 200,
-        y: svgHeight / 2
-      };
-    }); */
     this.nodeData = params.nodes.map((item, index) => {
       let x = item.x || 100 * index + 200
       let y = item.y || this.svgHeight/5

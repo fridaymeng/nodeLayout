@@ -14,6 +14,11 @@
     }
     g.unit-dis {
       stroke-width: 1px;
+      &[data-ready="true"] {
+        .small-circle {
+          opacity: 1;
+        }
+      }
       &.selected {
         stroke-dasharray: 5;
         .small-circle {
