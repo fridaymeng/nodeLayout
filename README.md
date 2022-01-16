@@ -22,7 +22,7 @@ yarn start
 ### Init
 ```js
 import * as nodelayout from "nodelayout";
-const nodeLayouts = new nodelayout.NodeLayout();
+const nodeLayouts = new NodeLayout();
 nodeLayouts.init({
       id: "node-wrap",
       connectType: "line", // path or line
