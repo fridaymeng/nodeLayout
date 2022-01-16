@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <div style="padding: 0 0 10px;">
+  <div style="padding: 0 0 10px;position: absolute;top: 115px;left: 20px;">
     <button
       onmousedown="add()"
       style="padding: 10px 30px; margin: 5px 0 0 0; background: #fff; border: 1px solid #aaa; border-radius: 5px; cursor: pointer;"
@@ -33,6 +33,15 @@
   <div id="node-wrap"></div>
   <script src="index.js"></script>
   <script>
+    function getWindowSize () {
+      return {
+        height: window.innerHeight,
+        width: window.innerWidth
+      }
+    }
+    const size = getWindowSize()
+    const height = size.height
+    const width = size.width
     const nodeLayouts = new nodeLayout.NodeLayout()
     const nodes = [];
     const lines = [];
@@ -94,7 +103,9 @@
     function add () {
       nodeLayouts.add({
         title: 'step',
-        id: Math.random() + ''
+        id: Math.random() + '',
+        x: Math.random() * width,
+        y: Math.random() * height / 2
       });
     }
     function zoomIn () {
