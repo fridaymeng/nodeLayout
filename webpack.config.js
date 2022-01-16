@@ -9,7 +9,7 @@ module.exports = {
     path: path.resolve(__dirname, 'lib'),
     filename: 'index.js',
     library: {
-      name: "nodeLayout",
+      // name: "nodeLayout",
       type: "umd"
     }
   },

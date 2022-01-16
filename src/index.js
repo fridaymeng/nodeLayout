@@ -435,5 +435,10 @@ class NodeLayout {
     )
   }
 }
+function init () {
+  return new NodeLayout;
+}
 
-export { NodeLayout };
+export {
+  NodeLayout
+}

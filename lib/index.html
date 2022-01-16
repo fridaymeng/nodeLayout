@@ -33,6 +33,7 @@
   <div id="node-wrap"></div>
   <script src="index.js"></script>
   <script>
+    console.log(window)
     function getWindowSize () {
       return {
         height: window.innerHeight,
@@ -42,7 +43,7 @@
     const size = getWindowSize()
     const height = size.height
     const width = size.width
-    const nodeLayouts = new nodeLayout.NodeLayout()
+    const nodeLayouts = new NodeLayout()
     const nodes = [];
     const lines = [];
     for (let i = 0; i < 10; i ++) {
