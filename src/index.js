@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import uuid from "./utils/uuid";
 import renderOptionList from "./optionList";
-import { defaultIcon, deletIcon } from "./utils/icon";
+import { deletIcon } from "./utils/icon";
 import "./less/index.less";
 
 class NodeLayout {
@@ -257,9 +257,13 @@ class NodeLayout {
     // icon
     this.objectWrap.append("g")
       .attr("transform", "translate(-15, -15)")
-      .html(defaultIcon);
+      .html((d) => {
+        return d.icon ? d.icon : ''
+      });
     this.objectWrap.append("text")
-      .attr("y", 45)
+      .attr("y", (d) => {
+        return d.icon ? 45 : 8
+      })
       .attr("fill", "#111")
       .attr("style", "text-anchor: middle;")
       .text((d) => d.text);
@@ -322,6 +326,7 @@ class NodeLayout {
         y
       }
       return {
+        ...item,
         id: item.id,
         text: item.title,
         x,
