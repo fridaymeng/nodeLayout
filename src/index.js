@@ -51,6 +51,7 @@ class NodeLayout {
       .on("start", function (event, d) { $this.smallCircleDragstart(event, d, $this) })
       .on("drag", function (event, d) { $this.smallCircleDraging(event, d, $this) })
       .on("end", function (event, d) { $this.smallCircleDragend(event, d, $this, this) });
+    this.handleDeleteNode = this.handleDeleteNode.bind(this);
   }
   // on click
   handleClick (event, d) {
@@ -136,7 +137,7 @@ class NodeLayout {
   }
   handleDeleteNode(event, d) {
     this.nodeData = this.nodeData.filter (item => d.id !== item.id);
-    renderNodes({ data: this.nodeData });
+    this.renderNodes({ data: this.nodeData });
     this.connectData = this.connectData.filter (item => {
       return item.source !== d.id && item.target !== d.id;
     });

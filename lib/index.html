@@ -33,20 +33,24 @@
   <div id="node-wrap"></div>
   <script src="index.js"></script>
   <script>
-    const nodeLayouts = new nodelayout.NodeLayout()
+    const nodeLayouts = new nodeLayout.NodeLayout()
     const nodes = [];
     const lines = [];
     for (let i = 0; i < 10; i ++) {
       const id = Math.random() + '';
       nodes.push({
         id,
-        title: Number.parseInt(Math.random() * 1000000)
+        x: 100 * i,
+        y: 100 + i,
+        title: Number.parseInt(Math.random() * 100000)
       })
     }
+    nodes[0].x = nodes.length / 2 * 100
+    nodes[0].y = 400
     for (let i = 0; i < 9; i ++) { 
       lines.push({
         id: Math.random() + '',
-        startIndex: 0,
+        startIndex: 3,
         endIndex: 1,
         source: nodes[0].id,
         target: nodes[i+1].id
