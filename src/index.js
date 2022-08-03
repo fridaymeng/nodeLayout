@@ -146,15 +146,15 @@ class NodeLayout {
   smallCircleDragstart (event, d, $this, $that) {
     d3.selectAll(".unit-dis").attr("data-ready", "true");
     d3.select($that.parentNode).attr("data-ready", "");
-    d.dx = event.sourceEvent.layerX - Math.cos(Math.PI / 180 * d.index * 90) * $this.smallCirceRadius;
-    d.dy = event.sourceEvent.layerY - Math.sin(Math.PI / 180 * d.index * 90) * $this.smallCirceRadius;
+    d.dx = event.sourceEvent.layerX - Math.cos(Math.PI / 180 * d.index * 90) * $this.smallCirceRadius - 5;
+    d.dy = event.sourceEvent.layerY - Math.sin(Math.PI / 180 * d.index * 90) * $this.smallCirceRadius - 105;
   }
   smallCircleDraging (event, d, $this) {
     const k = $this.zoomK === 0 ? 1 : $this.zoomK;
     d.x1 = (d.dx - $this.zoomX)/k;
     d.y1 = (d.dy - $this.zoomY)/k;
-    d.x2 = (event.sourceEvent.layerX - $this.zoomX)/k;
-    d.y2 = (event.sourceEvent.layerY - $this.zoomY)/k;
+    d.x2 = (event.sourceEvent.layerX - $this.zoomX)/k - 8;
+    d.y2 = (event.sourceEvent.layerY - $this.zoomY)/k - 108;
     let pos = `M${d.x1},${d.y1} ${d.x2},${d.y2}`;
     if ($this.connectType === "path") {
       switch (d.index) {
